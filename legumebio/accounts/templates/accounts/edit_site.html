@@ -131,9 +131,8 @@
         
                 <!-- start formregister -->
                 <div class="container-fluid py-5" id="form-commands">
-                    <h3 class="text-center text-primary">modification, ajout, suppression de legumes</h3>
+                    <h3 class="text-center text-primary">Editer vos légumes:</h3>
                     <div class="container py-5">
-                        <div class="row justify-content-center" ></div>
                         {% if messages %}
                             <section class="messages position-absolute start-50 translate-middle-x" id="messages-contact" style="width: 400px !important;"></section>
                                 {% for message in messages %}
@@ -144,6 +143,59 @@
                                 {% endfor %}
                                 </section>
                         {% endif %}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#formulaireModal">
+                            Commander la carte
+                        </button>
+                        <div class="modal fade" id="formulaireModal" tabindex="-1" role="dialog" aria-labelledby="formulaireModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="formulaireModalLabel">Formulaire de paiement - La carte est à 10$</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="col-md-12">
+                                <form method="post" >
+                                  
+                                  <h5>Informations de paiement</h5>
+                                  <h6>payement par carte</h6>
+                                  </div>
+                                  <div id="cartePaiement">
+                                  <div class="form-group">
+                                    <label for="nomCarte">Nom sur la carte :</label>
+                                    <input type="text" class="form-control" id="nomCarte" name="nom_carte_payement">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="numeroCarte">Numéro de carte :</label>
+                                    <input type="number" class="form-control" id="numeroCarte" name="numero_carte" required>
+                                  </div>
+                                   <!-- date d'expiration de la carte -->
+                                  <div class="form-group">
+                                  <label for="dateExpiration">Date d'expiration :</label>
+                                  <input type="date" class="form-control" id="dateExpiration" name="date_expiration" required>
+                                  </div>
+                        
+                                  <div class="form-group">
+                                    <label for="codeSecurite">Code de sécurité :</label>
+                                    <input type="number" class="form-control" id="codeSecurite" name="code_securite" required>
+                                  </div>
+                                  </div>
+                                  <button type="submit" name="payer" class="btn btn-primary mt-3" data-toggle="modal" data-target="#maBoiteDialogue">Payer</button>
+                                </form>
+                                </div>
+                              </div>
+                              
+                               
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                <button type="button" name="enregistrement_carte" class="btn btn-primary">Enregistrer</button>
+                              </div>
+                              </div>
+                            </div>
+                            </div>
+                          </div>               
                         
                         </div>
                     </div>

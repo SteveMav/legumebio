@@ -3,8 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
+from requests import session
 from .forms import RegistrationForm, loginForm
-from vegetable_shop.models import Command
+from vegetable_shop.models import Command, Vegetable
 
 def register(request):
     form = RegistrationForm()
@@ -51,14 +52,16 @@ def update_status(request, command_id):
 
 @permission_required('accounts.add_user')  
 def edit_site(request):
-    return render(request, 'accounts/edit_site.html')
+    vegetables = Vegetable.objects.all()
+    return render(request, 'accounts/edit_site.html', {'vegetables': vegetables})
     
 
     
-
 def deconnect(request):
     logout(request)
     return redirect('vegetable_shop:index')
+
+
 
 def connect(request):
     form = loginForm()
