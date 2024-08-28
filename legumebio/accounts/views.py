@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from requests import session
-from .forms import RegistrationForm, loginForm
+from .forms import RegistrationForm, loginForm, VegetableForm
 from vegetable_shop.models import Command, Vegetable
 
 def register(request):
@@ -54,6 +54,29 @@ def update_status(request, command_id):
 def edit_site(request):
     vegetables = Vegetable.objects.all()
     return render(request, 'accounts/edit_site.html', {'vegetables': vegetables})
+
+
+@permission_required('accounts.add_user')
+def delete_vegetable(request, vegetable_id):
+    vegetable = Vegetable.objects.get(id=vegetable_id)
+    messages.success(request, 'Légume supprimé avec succès!')
+    vegetable.delete()
+    return redirect('accounts:editsite')
+
+def add_vegetable(request):
+    form = VegetableForm()
+    if request.method == 'POST':
+        form = VegetableForm(request.POST)
+        if form.is_valid():
+            vegetable = form.save(commit=False)
+            vegetable.user = request.user
+            vegetable.save()
+            messages.success(request, 'Légume ajouté avec succès!')
+            return redirect('accounts:editsite')
+        else:
+            messages.warning(request, 'Erreur lors de la validation du formulaire.')
+            return render(request, 'accounts/add_vegetable.html', {'form': form})
+    return render(request, 'accounts/add_vegetable.html', {'form': form})
     
 
     

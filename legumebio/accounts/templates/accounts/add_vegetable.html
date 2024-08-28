@@ -131,7 +131,7 @@
         
                 <!-- start formregister -->
                 <div class="container-fluid py-5" id="form-commands">
-                    <h3 class="text-center text-primary">Editer vos légumes:</h3>
+                    <h3 class="text-center text-primary">ajouter un nouveau légume:</h3>
                     <div class="container py-5">
                         {% if messages %}
                             <section class="messages position-absolute start-50 translate-middle-x" id="messages-contact" style="width: 400px !important;"></section>
@@ -143,25 +143,12 @@
                                 {% endfor %}
                                 </section>
                         {% endif %}
-                            <p class="text-center"><a href="{% url 'accounts:add_vegetable' %}" class="btn btn-secondary" >Ajouter un légume</a></p>
-                        {% for vegetable in vegetables %}
-                             <div class="card mb-4">
-                                <div class="card-header">
-                                    <h3 class="card-title">{{ vegetable.name }}</h3>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text">prix: {{ vegetable.price }} fc</p>
-                                    <p>Quantité en stock: {{ vegetable.stock }}</p>
-            
-                                </div>
-                                <div class="card-footer">
-                                    <a href="#" class="btn btn-primary">Editer</a>
-                                    <a href="{% url 'accounts:delete_vegetable' vegetable.id %}" class="btn btn-danger justify-content-center">Supprimer</a>
-                                </div>
-                             </div>   
-    
-                        {% endfor %}
-
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </form>
+                           
                     </div>
                 </div>
                 <style>

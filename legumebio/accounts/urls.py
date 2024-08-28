@@ -11,5 +11,7 @@ urlpatterns = [
     path('seecommands/', views.seecommands, name='seecommands'),
     path('seeallcommands/', views.seeallcommands, name='seeallcommands'),
     path('update_status/<int:command_id>/', views.update_status, name='update_status'),
-    path('editsite/', views.edit_site, name='editsite'),    
+    path('editsite/', views.edit_site, name='editsite'),  
+    path('deletevegetable/<int:vegetable_id>/', views.delete_vegetable, name='delete_vegetable'),
+    path('addvegetable/', views.add_vegetable, name='add_vegetable'),
 ]

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
+from vegetable_shop.models import Vegetable
 
 class RegistrationForm(UserCreationForm):
     COMMUNE_CHOICES = [
@@ -86,3 +87,23 @@ class loginForm(forms.Form):
         self.fields['password'].widget.attrs.update({'class': 'form-control my-3', 'id': 'passwordInput'})
         self.fields['password'].help_text = ''
         self.fields['password'].label = 'Mot de passe'
+
+
+
+class VegetableForm(forms.Form):
+    class Meta:
+        model = Vegetable
+        fields = ['name', 'picture', 'price', 'stock']
+        labels = {
+            'name': 'Nom du légume',
+            'picture': 'Photo du légume',
+            'price': 'Prix du légume',
+            'stock': 'Stock du légume',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control my-3', 'id': 'nameInput'}),
+            'picture': forms.FileInput(attrs={'class': 'form-control my-3', 'id': 'pictureInput'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control my-3', 'id': 'priceInput'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control my-3', 'id': 'stockInput'}),
+        }
+

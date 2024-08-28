@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Vegetable(models.Model):
        name = models.CharField(max_length=100)
        description = models.TextField()
+       picture = models.ImageField(upload_to='pictures', blank=True)
        price = models.DecimalField(max_digits=10, decimal_places=2)
        stock = models.IntegerField()
        date_add = models.DateTimeField(auto_now_add=True)
