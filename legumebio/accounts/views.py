@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from requests import session
 from .forms import RegistrationForm, loginForm, VegetableForm
 from vegetable_shop.models import Command, Vegetable
+from datetime import datetime
 
 def register(request):
     form = RegistrationForm()
@@ -63,20 +64,65 @@ def delete_vegetable(request, vegetable_id):
     vegetable.delete()
     return redirect('accounts:editsite')
 
+permission_required('vegetable_shop.add_vegetable')
 def add_vegetable(request):
-    form = VegetableForm()
     if request.method == 'POST':
-        form = VegetableForm(request.POST)
-        if form.is_valid():
-            vegetable = form.save(commit=False)
-            vegetable.user = request.user
-            vegetable.save()
-            messages.success(request, 'Légume ajouté avec succès!')
-            return redirect('accounts:editsite')
+        vegetable_name = request.POST.get('name')
+        vegetable_description = 'legume bio'
+        vegetable_image = request.FILES.get('picture')
+        vegetable_price = request.POST.get('price')
+        vegetable_stock = request.POST.get('stock')
+        date_add = datetime.now()
+        vegetable = Vegetable(name=vegetable_name, description=vegetable_description, picture=vegetable_image, price=vegetable_price, stock=vegetable_stock, date_add=date_add)
+        vegetable.save()
+        messages.success(request, 'Légume ajouté avec succès!')
+        return redirect('accounts:editsite')
+    return render(request, 'accounts/add_vegetable.html')
+
+def edit_vegetable(request, vegetable_id):
+    vegetable = Vegetable.objects.get(id=vegetable_id)
+
+    
+    if request.method == 'POST':
+        if request.POST.get('name') == '':
+            vegetable_name = vegetable.name
         else:
-            messages.warning(request, 'Erreur lors de la validation du formulaire.')
-            return render(request, 'accounts/add_vegetable.html', {'form': form})
-    return render(request, 'accounts/add_vegetable.html', {'form': form})
+            vegetable_name = request.POST.get('name')
+        vegetable_description = vegetable.description
+
+
+        if request.FILES.get('picture') == None:
+            vegetable_image = vegetable.picture
+        else:
+            vegetable_image = request.FILES.get('picture')
+
+
+
+        if request.POST.get('price') == '':
+            vegetable_price = vegetable.price
+        else:
+            vegetable_price = float(request.POST.get('price'))
+
+
+
+        if request.POST.get('stock') == '':
+            vegetable_stock = vegetable.stock
+        else:
+            vegetable_stock = request.POST.get('stock')
+        
+        date_edit = vegetable.date_add
+
+
+        vegetable.name = vegetable_name
+        vegetable.description = vegetable_description
+        vegetable.picture = vegetable_image
+        vegetable.price = vegetable_price
+        vegetable.stock = vegetable_stock
+        vegetable.date_edit = date_edit
+        vegetable.save()
+        messages.success(request, 'Légume modifié avec succès!')
+        return redirect('accounts:editsite')
+    return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable})
     
 
     

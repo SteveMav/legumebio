@@ -14,4 +14,5 @@ urlpatterns = [
     path('editsite/', views.edit_site, name='editsite'),  
     path('deletevegetable/<int:vegetable_id>/', views.delete_vegetable, name='delete_vegetable'),
     path('addvegetable/', views.add_vegetable, name='add_vegetable'),
+    path('editvegetable/<int:vegetable_id>/', views.edit_vegetable, name='edit_vegetable'),
 ]
