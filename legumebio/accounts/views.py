@@ -82,7 +82,7 @@ def add_vegetable(request):
 def edit_vegetable(request, vegetable_id):
     vegetable = Vegetable.objects.get(id=vegetable_id)
 
-    
+
     if request.method == 'POST':
         if request.POST.get('name') == '':
             vegetable_name = vegetable.name
@@ -123,6 +123,26 @@ def edit_vegetable(request, vegetable_id):
         messages.success(request, 'Légume modifié avec succès!')
         return redirect('accounts:editsite')
     return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable})
+
+
+@permission_required('accounts.add_user')
+def add_user_staff(request):
+    form = RegistrationForm()
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+        
+            user = form.save()
+            user.is_staff = True
+            user.save()
+
+            
+            messages.success(request, 'Utilisateur ajouté avec succès!')
+            return redirect('accounts:editsite')
+        else:
+            messages.warning(request, 'Erreur lors de la validation du formulaire.')
+            return render(request, 'accounts/add_user_staff.html', {'form': form})
+    return render(request, 'accounts/add_user_staff.html', {'form': form})
     
 
     

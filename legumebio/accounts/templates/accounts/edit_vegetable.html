@@ -62,14 +62,19 @@
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
                             <a href="{% url 'vegetable_shop:index' %}" class="nav-item nav-link">accueil</a>
-                            <a href="/commande" class="nav-item nav-link ">commandes</a>
+                            {% if user.is_staff %}
+                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes</a>
+                            {% else %}
+                            <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link">commandes</a>
+                            {% endif %}
+
                             <a href="shop.html" class="nav-item nav-link">à propos</a>                           
                             <a href="{% url 'vegetable_shop:contact' %}" class="nav-item nav-link">Contact</a>
                            
                         </div>
                         <div class="d-flex m-3 me-0">
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:seeallcommands' %}" class="my-auto">
+                            <a href="{% url 'accounts:add_user_staff' %}" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                             {% else %}
@@ -80,15 +85,15 @@
 
                             
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:seeallcommands' %}" class="my-auto" style="margin-left: 20px;">
+                            <a href="{% url 'accounts:editsite' %}" class="my-auto" style="margin-left: 30px; margin-right: 20px;">
                                 <i class="fas fa-edit fa-2x"></i>
                             </a>
                             {% endif %}
-                            {% if user.is_authenticated and user.is_staff %}
-                                <a href="{% url 'accounts:seeallcommands' %}" class="position-relative me-4 my-auto">
+                            <!-- {% if user.is_authenticated and user.is_staff %}
+                                <a href="{% url 'accounts:add_user_staff' %}" class="my-auto">
                                     <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -90px; height: 20px; min-width: 20px;">{{total_commands}}</span>
                                 </a>
-                            {% endif %}
+                            {% endif %} -->
 
                             {% if user.is_authenticated and not user.is_staff %}
                                 <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto">
@@ -161,7 +166,7 @@
                                 <label for="stock">Stock du légume:</label>
                                 <input type="number" class="form-control" id="stock" name="stock" placeholder="{{vegetable.stock}}">
                             </div>
-                            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+                            <button type="submit" class="btn btn-primary mt-3">Modifier</button>
                         </form>
                            
                     </div>
