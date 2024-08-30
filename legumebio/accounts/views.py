@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
@@ -51,7 +52,7 @@ def update_status(request, command_id):
         return redirect('accounts:seeallcommands')
     
 
-@permission_required('accounts.add_user')  
+@permission_required('vegetable_shop.view_vegetable')
 def edit_site(request):
     vegetables = Vegetable.objects.all()
     return render(request, 'accounts/edit_site.html', {'vegetables': vegetables})
@@ -79,6 +80,8 @@ def add_vegetable(request):
         return redirect('accounts:editsite')
     return render(request, 'accounts/add_vegetable.html')
 
+
+@permission_required('vegetable_shop.add_vegetable')
 def edit_vegetable(request, vegetable_id):
     vegetable = Vegetable.objects.get(id=vegetable_id)
 
@@ -135,7 +138,9 @@ def add_user_staff(request):
             user = form.save()
             user.is_staff = True
             user.save()
-            
+            technical_team = Group.objects.get(name='technical_team')
+            user.groups.add(technical_team)
+
 
             messages.success(request, 'Utilisateur ajouté avec succès!')
             return redirect('accounts:editsite')
