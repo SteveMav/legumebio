@@ -16,5 +16,6 @@ urlpatterns = [
     path('addvegetable/', views.add_vegetable, name='add_vegetable'),
     path('editvegetable/<int:vegetable_id>/', views.edit_vegetable, name='edit_vegetable'),
     path('adduserstaff/', views.add_user_staff, name='add_user_staff'),
+    path('editaccount', views.edit_account, name='editaccount'),
 
 ]

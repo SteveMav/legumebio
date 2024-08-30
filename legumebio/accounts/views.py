@@ -128,6 +128,13 @@ def edit_vegetable(request, vegetable_id):
     return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable})
 
 
+@login_required
+def edit_account(request):
+    form = RegistrationForm()
+
+    return render(request, 'accounts/edit_account.html', {'form': form})
+
+
 @permission_required('accounts.add_user')
 def add_user_staff(request):
     form = RegistrationForm()
