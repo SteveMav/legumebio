@@ -135,8 +135,8 @@ def add_user_staff(request):
             user = form.save()
             user.is_staff = True
             user.save()
-
             
+
             messages.success(request, 'Utilisateur ajouté avec succès!')
             return redirect('accounts:editsite')
         else:
