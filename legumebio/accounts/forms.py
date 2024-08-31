@@ -112,8 +112,8 @@ class VegetableForm(forms.Form):
 
 class EditAccountForm(forms.ModelForm):
     COMMUNE_CHOICES = [
-        ('gombe','gombe'),
-        ('lingwala', 'ligwala'),
+        ('gombe', 'gombe'),
+        ('lingwala', 'lingwala'),
         ('kinshasa', 'kinshasa')
     ]
     phone_number = forms.CharField(
@@ -121,15 +121,21 @@ class EditAccountForm(forms.ModelForm):
         required=False, 
         widget=forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': ''})
     )
-    commune = forms.CharField(
-        max_length=100, 
+    commune = forms.ChoiceField(
+        choices=COMMUNE_CHOICES,
         required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Commune'})
+        widget=forms.Select(attrs={'class': 'form-control my-3', 'placeholder': 'Commune'})
     )
-
+        
     class Meta:
         model = User
         fields = ['username', 'email']
+        labels = {
+            'username': 'Nom d\'utilisateur',
+            'email': 'Email',
+            'phone_number': 'Numéro de téléphone',
+            'commune': 'Commune',
+        }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Nom d\'utilisateur'}),
             'email': forms.EmailInput(attrs={'class': 'form-control my-3', 'placeholder': 'Email'}),
@@ -138,6 +144,12 @@ class EditAccountForm(forms.ModelForm):
             'username': None,
             'email': None,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(EditAccountForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['phone_number'].initial = self.instance.profile.phone_number
+            self.fields['commune'].initial = self.instance.profile.commune
 
     def save(self, commit=True):
         user = super().save(commit=False)

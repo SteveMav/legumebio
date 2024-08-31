@@ -20,7 +20,7 @@ class Command(models.Model):
     quantity = models.IntegerField()
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     name_client = models.CharField(max_length=100)
-    commune_client = models.CharField(max_length=200, default='Gombe')
+    commune_client = models.CharField(max_length=200)
     address_client = models.CharField(max_length=200)
     date_command = models.DateTimeField(default=datetime.now)
     statut = models.CharField(max_length=50, default='En cours')

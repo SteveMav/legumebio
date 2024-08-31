@@ -95,7 +95,7 @@
                             {% if user.is_authenticated and not user.is_staff %}
                                 <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto">
                                     
-                                    <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -40px; height: 20px; min-width: 20px;">{{user_commands_count}}</span>
+                                    <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -55px; height: 20px; min-width: 20px;">{{user_commands_count}}</span>
                                 </a>
                             {% endif %}
 
@@ -131,10 +131,7 @@
                     <div class="col-md-12 col-lg-7">
                         <h4 class="mb-3 text-secondary">legumes 100% bio</h4>
                         <h1 class="mb-5 display-3 text-primary">Du pondu à l'epinard en passant par le Ngai Ngai</h1>
-                        <div class="position-relative mx-auto">
-                            <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="text" placeholder="quel légume vous voulez ?">
-                            <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">rechercher</button>
-                        </div>
+                        
                     </div>
                     <div class="col-md-12 col-lg-5">
                         <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
@@ -247,12 +244,7 @@
                                         <p class="text-secondary mb-0">produits de qualité</p>
                                     </a>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="position-relative mx-auto">
-                                        <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number" placeholder="Your Email">
-                                        <button type="submit" class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Subscribe Now</button>
-                                    </div>
-                                </div>
+                            
                                 
                             </div>
                         </div>
@@ -261,7 +253,7 @@
                                 <div class="footer-item">
                                     <h4 class="text-light mb-3">Pourquoi nos légumes sont appreciés ?</h4>
                                     <p class="mb-4">Nos légumes bio sont cultivés avec soin, sans pesticides ni produits chimiques. Ils sont récoltés à maturité pour garantir une fraîcheur optimale et un goût authentique.</p>
-                                    <a href="/commande" class="btn border-secondary py-2 px-4 rounded-pill text-primary">En savoir plus</a>
+                                    <a href="{% url 'vegetable_shop:contact' %}" class="btn border-secondary py-2 px-4 rounded-pill text-primary">En savoir plus</a>
                                 </div>
                             </div>
                             

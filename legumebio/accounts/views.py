@@ -133,27 +133,39 @@ def edit_vegetable(request, vegetable_id):
 @login_required
 def edit_account(request):
     user = request.user
+    total_commands = Command.objects.filter(user=request.user, statut='En cours').count()
     if request.method == 'POST':
-        form = EditAccountForm(request.POST)
+        form = EditAccountForm(request.POST, instance=user)
         if form.is_valid():
-            if request.POST.get('username'):
-                user.username = request.POST.get('username')
-            if request.POST.get('email'):
-                user.email = request.POST.get('email')
-            if request.POST.get('phone_number'):
-                user.profile.phone_number = request.POST.get('phone_number')
-            if request.POST.get('commune'):
-                user.profile.commune = request.POST.get('commune')
-            user.save()
-            user.profile.save()
-            messages.success(request, 'Votre compte a été mis à jour avec succès.')
-            return redirect('edit_account')
+            updated = False
+            if form.cleaned_data['username'] and form.cleaned_data['username'] != user.username:
+                user.username = form.cleaned_data['username']
+                updated = True
+            if form.cleaned_data['email'] and form.cleaned_data['email'] != user.email:
+                user.email = form.cleaned_data['email']
+                updated = True
+            if form.cleaned_data['phone_number'] and form.cleaned_data['phone_number'] != user.profile.phone_number:
+                user.profile.phone_number = form.cleaned_data['phone_number']
+                updated = True
+            if form.cleaned_data['commune'] and form.cleaned_data['commune'] != user.profile.commune:
+                user.profile.commune = form.cleaned_data['commune']
+                updated = True
+
+            if updated:
+                user.save()
+                user.profile.save()
+                messages.success(request, 'Votre compte a été mis à jour avec succès.')
+            else:
+                messages.info(request, 'Aucune modification détectée.')
+
+            return redirect('accounts:editaccount')
         else:
-            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+            messages.warning(request, 'Veuillez corriger les erreurs ci-dessous.')
     else:
         form = EditAccountForm(instance=user)
 
-    return render(request, 'accounts/edit_account.html', {'form': form})
+    return render(request, 'accounts/edit_account.html', {'form': form, 'total_commands': total_commands})
+
 
 
 @permission_required('accounts.add_user')
