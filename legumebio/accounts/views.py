@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from requests import session
-from .forms import RegistrationForm, loginForm, VegetableForm
+from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
 
@@ -128,9 +128,30 @@ def edit_vegetable(request, vegetable_id):
     return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable})
 
 
+
+
 @login_required
 def edit_account(request):
-    form = RegistrationForm()
+    user = request.user
+    if request.method == 'POST':
+        form = EditAccountForm(request.POST)
+        if form.is_valid():
+            if request.POST.get('username'):
+                user.username = request.POST.get('username')
+            if request.POST.get('email'):
+                user.email = request.POST.get('email')
+            if request.POST.get('phone_number'):
+                user.profile.phone_number = request.POST.get('phone_number')
+            if request.POST.get('commune'):
+                user.profile.commune = request.POST.get('commune')
+            user.save()
+            user.profile.save()
+            messages.success(request, 'Votre compte a été mis à jour avec succès.')
+            return redirect('edit_account')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = EditAccountForm(instance=user)
 
     return render(request, 'accounts/edit_account.html', {'form': form})
 

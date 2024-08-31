@@ -107,3 +107,43 @@ class VegetableForm(forms.Form):
             'stock': forms.NumberInput(attrs={'class': 'form-control my-3', 'id': 'stockInput'}),
         }
 
+
+
+
+class EditAccountForm(forms.ModelForm):
+    COMMUNE_CHOICES = [
+        ('gombe','gombe'),
+        ('lingwala', 'ligwala'),
+        ('kinshasa', 'kinshasa')
+    ]
+    phone_number = forms.CharField(
+        max_length=15, 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': ''})
+    )
+    commune = forms.CharField(
+        max_length=100, 
+        required=False, 
+        widget=forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Commune'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Nom d\'utilisateur'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control my-3', 'placeholder': 'Email'}),
+        }
+        help_texts = {
+            'username': None,
+            'email': None,
+        }
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.profile.phone_number = self.cleaned_data['phone_number']
+        user.profile.commune = self.cleaned_data['commune']
+        if commit:
+            user.save()
+            user.profile.save()
+        return user
