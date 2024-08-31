@@ -27,11 +27,12 @@ def commands(request):
             quantity = form.cleaned_data['quantity']
             
             command = Command(
-                user = request.user,
+                user=request.user,
                 vegetable=vegetable,
                 quantity=quantity,
                 name_client=form.cleaned_data['name_client'],
                 address_client=form.cleaned_data['address_client'],
+                commune_client=form.cleaned_data['commune_client'],  # Ajout de cette ligne
                 date_command=datetime.now(),
                 statut='En cours',
                 amount=vegetable.price * quantity

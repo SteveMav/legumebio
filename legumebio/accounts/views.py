@@ -205,8 +205,11 @@ def connect(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('vegetable_shop:commands')
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('vegetable_shop:index')
         else:
-            messages.warning(request, 'Utilisateur ou mot de passe incorrect.')
+            messages.warning(request, 'Nom d\'utilisateur ou mot de passe incorrect.')
             return render(request, 'accounts/login.html', {'form': form})
     return render(request, 'accounts/login.html', {'form': form})

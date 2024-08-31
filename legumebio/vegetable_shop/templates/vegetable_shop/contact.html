@@ -97,7 +97,7 @@
                             {% if user.is_authenticated and not user.is_staff %}
                                 <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto">
                                     
-                                    <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -40px; height: 20px; min-width: 20px;">{{user_commands_count}}</span>
+                                    <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -55px; height: 20px; min-width: 20px;">{{user_commands_count}}</span>
                                 </a>
                             {% endif %}
 
