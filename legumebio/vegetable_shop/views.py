@@ -9,14 +9,16 @@ def index(request):
     if request.user.is_staff:
         commands = Command.objects.filter(statut='En cours')
         total_commands = commands.count()
-        return render(request, 'vegetable_shop/index.html', {'total_commands': total_commands})
+        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
+        return render(request, 'vegetable_shop/index.html', {'total_commands': total_commands, 'vegetables': vegetables})
     if request.user.is_authenticated:
         user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        return render(request, 'vegetable_shop/index.html', {'user_commands_count': user_commands_count})
+        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
+        return render(request, 'vegetable_shop/index.html', {'user_commands_count': user_commands_count, 'vegetables': vegetables})
     
     else:
-        return render(request, 'vegetable_shop/index.html')
-
+        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
+        return render(request, 'vegetable_shop/index.html', {'vegetables': vegetables})
 
 @login_required
 def commands(request):

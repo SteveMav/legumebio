@@ -4,7 +4,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Fruitables - Vegetable Website Template</title>
+        <title>accueil</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
@@ -137,10 +137,19 @@
                         <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                             <div class="carousel-inner" role="listbox">
                                 <div class="carousel-item active rounded">
+                                    {% for vegetable in vegetables %}
+                                    {% if vegetable.picture %}
+                                        <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="{{ vegetable.name }}">
+                                    {% else %}
+                                        <img src="{% static 'path/to/default/image.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="Image non disponible">
+                                    {% endif %}
+                                    <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">{{ vegetable.name }}</a>
+                                {% endfor %}
+                                
                                     <img src="{% static 'images/epinard.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
                                     <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">épinards</a>
                                 </div>
-                                <div class="carousel-item rounded">
+                                <!-- <div class="carousel-item rounded">
                                     <img src="{% static 'images/pondu.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
                                     <a href="#" class="btn px-4 py-2 text-white rounded">pondu</a>
                                 </div>
@@ -151,7 +160,7 @@
                                 <div class="carousel-item rounded">
                                     <img src="{% static 'images/ngai-ngai.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
                                     <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">Ngai Ngai</a>
-                                </div>
+                                </div> -->
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
