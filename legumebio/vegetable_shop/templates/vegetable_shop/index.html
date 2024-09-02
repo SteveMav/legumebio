@@ -168,64 +168,25 @@
         <div class="container-fluid featurs py-5">
             <div class="container py-5">
                 <div class="row g-4">
+                    {% for vegetable in random_vegetables %}
                     <div class="col-md-6 col-lg-3">
                         <a href="{% url 'vegetable_shop:commands' %}">
                             <div class="text-center rounded bg-light p-4">
                                 <div class="featurs-icon rounded-circle bg-secondary mb-5 mx-auto">
-                                    <img src="{% static 'images/epinard.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
+                                    <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 rounded" alt="{{ vegetable.name }}">
                                 </div>
                                 <div class="featurs-content text-center">
-                                    <h5>Epinard</h5>
-                                    <p class="mb-0"></p>
-                                </div>
-                            </div>
-                        </a>
-                       
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <a href="{% url 'vegetable_shop:commands' %}">
-                            <div class="text-center rounded bg-light p-4">
-                                <div class="featurs-icon rounded-circle bg-secondary mb-5 mx-auto">
-                                    <img src="{% static 'images/ndunda.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                </div>
-                                <div class="featurs-content text-center">
-                                    <h5>Ndunda</h5>
+                                    <h5>{{ vegetable.name }}</h5>
                                     <p class="mb-0"></p>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="col-md-6 col-lg-3">
-                        <a href="{% url 'vegetable_shop:commands' %}">
-                            <div class=" text-center rounded bg-light p-4">
-                                <div class="featurs-icon  rounded-circle bg-secondary mb-5 mx-auto">
-                                    <img src="{% static 'images/pondu.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                </div>
-                                <div class="featurs-content text-center">
-                                    <h5>pondu</h5>
-                                    <p class="mb-0"></p>
-                                </div>
-                            </div>
-
-                        </a>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <a href="{% url 'vegetable_shop:commands' %}">
-                            <div class="text-center rounded bg-light p-4">
-                                <div class="featurs-icon rounded-circle bg-secondary mb-5 mx-auto">
-                                    <img src="{% static 'images/Mudjibu.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                </div>
-                                <div class="featurs-content text-center">
-                                    <h5>Mudjibu</h5>
-                                    <p class="mb-0"></p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-
+        
 
 
                 <!-- Footer Start -->
@@ -258,6 +219,7 @@
                                     <p>Address: IPG GOMBE, KINSHASA</p>
                                     <p>Email: madeleinelegumesbio@gmail.com</p>
                                     <p>Téléphone: +243 810589288</p>
+                                    <a href="https://wa.me/243810589288"><i class="fab fa-whatsapp text-light me-2"></i>whastapp</a>
                                 </div>
                             </div>
                         </div>

@@ -5,21 +5,27 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 
+from django.shortcuts import render
+from .models import Command, Vegetable
+
 def index(request):
     if request.user.is_staff:
         commands = Command.objects.filter(statut='En cours')
         total_commands = commands.count()
-        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
-        return render(request, 'vegetable_shop/index.html', {'total_commands': total_commands, 'vegetables': vegetables})
+        vegetables = Vegetable.objects.all()
+        random_vegetables = Vegetable.objects.order_by('?')[:4]
+        return render(request, 'vegetable_shop/index.html', {'total_commands': total_commands, 'vegetables': vegetables, 'random_vegetables': random_vegetables})
+    
     if request.user.is_authenticated:
         user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
-        return render(request, 'vegetable_shop/index.html', {'user_commands_count': user_commands_count, 'vegetables': vegetables})
+        vegetables = Vegetable.objects.all()
+        random_vegetables = Vegetable.objects.order_by('?')[:4]
+        return render(request, 'vegetable_shop/index.html', {'user_commands_count': user_commands_count, 'vegetables': vegetables, 'random_vegetables': random_vegetables})
     
     else:
-        vegetables = Vegetable.objects.all()  # Récupérer tous les légumes
-        return render(request, 'vegetable_shop/index.html', {'vegetables': vegetables})
-
+        vegetables = Vegetable.objects.all()
+        random_vegetables = Vegetable.objects.order_by('?')[:4]
+        return render(request, 'vegetable_shop/index.html', {'vegetables': vegetables, 'random_vegetables': random_vegetables})
 @login_required
 def commands(request):
     if request.method == 'POST':
