@@ -149,6 +149,7 @@ class EditAccountForm(forms.ModelForm):
         super(EditAccountForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['phone_number'].initial = self.instance.profile.phone_number
+            self.fields['phone_number'].label = 'Numéro de téléphone'
             self.fields['commune'].initial = self.instance.profile.commune
 
     def save(self, commit=True):
