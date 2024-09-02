@@ -62,7 +62,7 @@
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
                             <a href="{% url 'vegetable_shop:index' %}" class="nav-item nav-link">accueil</a>
-                            <a href="/commande" class="nav-item nav-link active">commandes</a>
+                            <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link active">commandes({{total_commands}})</a>
                                                     
                             <a href="{% url 'vegetable_shop:contact' %}" class="nav-item nav-link">Contact</a>
                            

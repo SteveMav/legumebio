@@ -63,7 +63,7 @@
                         <div class="navbar-nav mx-auto">
                             <a href="{% url 'vegetable_shop:index' %}" class="nav-item nav-link">accueil</a>
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes</a>
+                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes({{total_commands}})</a>
                             {% else %}
                             <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link">commandes</a>
                             {% endif %}
@@ -148,7 +148,7 @@
                                 {% endfor %}
                                 </section>
                         {% endif %}
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group mt-3">
                                 <label for="name">Nom du légume:</label>
@@ -168,7 +168,7 @@
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">Modifier</button>
                         </form>
-                           
+                        
                     </div>
                 </div>
                 <style>

@@ -60,7 +60,7 @@
                         <div class="navbar-nav mx-auto">
                             <a href="/" class="nav-item nav-link active">accueil</a>
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes</a>
+                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes({{total_commands}})</a>
                             {% else %}
                             <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link">commandes</a>
                             {% endif %}
@@ -136,31 +136,16 @@
                     <div class="col-md-12 col-lg-5">
                         <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                             <div class="carousel-inner" role="listbox">
-                                <div class="carousel-item active rounded">
-                                    {% for vegetable in vegetables %}
-                                    {% if vegetable.picture %}
-                                        <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="{{ vegetable.name }}">
-                                    {% else %}
-                                        <img src="{% static 'path/to/default/image.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="Image non disponible">
-                                    {% endif %}
-                                    <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">{{ vegetable.name }}</a>
+                                {% for vegetable in vegetables %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %} rounded">
+                                        {% if vegetable.picture %}
+                                            <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="{{ vegetable.name }}">
+                                        {% else %}
+                                            <img src="{% static 'path/to/default/image.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="Image non disponible">
+                                        {% endif %}
+                                        <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">{{ vegetable.name }}</a>
+                                    </div>
                                 {% endfor %}
-                                
-                                    <img src="{% static 'images/epinard.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
-                                    <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">épinards</a>
-                                </div>
-                                <!-- <div class="carousel-item rounded">
-                                    <img src="{% static 'images/pondu.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                    <a href="#" class="btn px-4 py-2 text-white rounded">pondu</a>
-                                </div>
-                                <div class="carousel-item rounded">
-                                    <img src="{% static 'images/mudjibu.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide" width="200px" height="200px">
-                                    <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">Mudjibu</a>
-                                </div>
-                                <div class="carousel-item rounded">
-                                    <img src="{% static 'images/ngai-ngai.jpg' %}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                    <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded">Ngai Ngai</a>
-                                </div> -->
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -172,6 +157,7 @@
                             </button>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

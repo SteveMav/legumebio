@@ -33,9 +33,14 @@ def seecommands(request):
 
 @permission_required('vegetable_shop.change_command')
 def seeallcommands(request):
-    commands = Command.objects.filter(statut='En cours')
-    total_commands = commands.count()
-    all_commands = Command.objects.all().order_by('-date_command')
+    ongoing_commands = Command.objects.filter(statut='En cours').order_by('-date_command')
+    
+    other_commands = Command.objects.exclude(statut='En cours').order_by('-date_command')
+    
+    all_commands = list(ongoing_commands) + list(other_commands)
+    
+    total_commands = Command.objects.filter(statut= 'En cours').count()
+    
     return render(request, 'accounts/seeallcommands.html', {'commands': all_commands, 'total_commands': total_commands})
 
 @permission_required('vegetable_shop.change_command')
@@ -55,7 +60,8 @@ def update_status(request, command_id):
 @permission_required('vegetable_shop.view_vegetable')
 def edit_site(request):
     vegetables = Vegetable.objects.all()
-    return render(request, 'accounts/edit_site.html', {'vegetables': vegetables})
+    total_commands = Command.objects.filter(statut= 'En cours').count()
+    return render(request, 'accounts/edit_site.html', {'vegetables': vegetables, 'total_commands': total_commands})
 
 
 @permission_required('accounts.add_user')
@@ -78,7 +84,8 @@ def add_vegetable(request):
         vegetable.save()
         messages.success(request, 'Légume ajouté avec succès!')
         return redirect('accounts:editsite')
-    return render(request, 'accounts/add_vegetable.html')
+    total_commands = Command.objects.filter(statut= 'En cours').count()
+    return render(request, 'accounts/add_vegetable.html', {'total_commands': total_commands})
 
 
 @permission_required('vegetable_shop.add_vegetable')
@@ -125,7 +132,8 @@ def edit_vegetable(request, vegetable_id):
         vegetable.save()
         messages.success(request, 'Légume modifié avec succès!')
         return redirect('accounts:editsite')
-    return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable})
+    total_commands = Command.objects.filter(statut= 'En cours').count()
+    return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable, 'total_commands': total_commands})
 
 
 
@@ -186,8 +194,10 @@ def add_user_staff(request):
             return redirect('accounts:editsite')
         else:
             messages.warning(request, 'Erreur lors de la validation du formulaire.')
-            return render(request, 'accounts/add_user_staff.html', {'form': form})
-    return render(request, 'accounts/add_user_staff.html', {'form': form})
+            total_commands = Command.objects.filter(statut= 'En cours').count()
+            return render(request, 'accounts/add_user_staff.html', {'form': form, 'total_commands': total_commands})
+    total_commands = Command.objects.filter(statut= 'En cours').count()
+    return render(request, 'accounts/add_user_staff.html', {'form': form, 'total_commands': total_commands})
     
 
     

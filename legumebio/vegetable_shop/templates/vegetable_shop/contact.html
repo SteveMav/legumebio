@@ -62,7 +62,7 @@
                         <div class="navbar-nav mx-auto">
                             <a href="{% url 'vegetable_shop:index' %}" class="nav-item nav-link">accueil</a>
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes</a>
+                            <a href="{% url 'accounts:seeallcommands' %}" class="nav-item nav-link">commandes({{total_commands}})</a>
                             {% else %}
                             <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link">commandes</a>
                             {% endif %}
