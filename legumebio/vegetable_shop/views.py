@@ -96,5 +96,5 @@ def contact(request):
 
 
 
-def error404(request, exception):
+def custom_404(request, exception):
     return render(request, 'vegetable_shop/404.html', status=404)
