@@ -98,3 +98,8 @@ def contact(request):
 
 def custom_404(request, exception):
     return render(request, 'vegetable_shop/404.html', status=404)
+
+def custom_500_error(request):
+    return render(request, 'vegetable_shop/500.html', status=500)
+
+

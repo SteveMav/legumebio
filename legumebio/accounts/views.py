@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -93,48 +93,46 @@ def edit_vegetable(request, vegetable_id):
     vegetable = Vegetable.objects.get(id=vegetable_id)
 
 
+@permission_required('vegetable_shop.change_vegetable')
+def edit_vegetable(request, vegetable_id):
+    vegetable = get_object_or_404(Vegetable, id=vegetable_id)
+    total_commands = Command.objects.filter(statut='En cours').count()
+
     if request.method == 'POST':
-        if request.POST.get('name') == '':
-            vegetable_name = vegetable.name
+        updated = False
+
+        if request.POST.get('name') and request.POST.get('name') != vegetable.name:
+            vegetable.name = request.POST.get('name')
+            updated = True
+
+        if request.POST.get('description') and request.POST.get('description') != vegetable.description:
+            vegetable.description = request.POST.get('description')
+            updated = True
+
+        if request.FILES.get('picture') and request.FILES.get('picture') != vegetable.picture:
+            vegetable.picture = request.FILES.get('picture')
+            updated = True
+
+        if request.POST.get('price') and float(request.POST.get('price')) != vegetable.price:
+            try:
+                vegetable.price = float(request.POST.get('price'))
+                updated = True
+            except ValueError:
+                messages.warning(request, 'Mettez un nombre valide pour le prix.')
+
+        if request.POST.get('stock') and int(request.POST.get('stock')) != vegetable.stock:
+            vegetable.stock = int(request.POST.get('stock'))
+            updated = True
+
+        if updated:
+            vegetable.save()
+            messages.success(request, 'Légume modifié avec succès!')
         else:
-            vegetable_name = request.POST.get('name')
-        vegetable_description = vegetable.description
+            messages.info(request, 'Aucune modification détectée.')
 
-
-        if request.FILES.get('picture') == None:
-            vegetable_image = vegetable.picture
-        else:
-            vegetable_image = request.FILES.get('picture')
-
-
-
-        if request.POST.get('price') == '':
-            vegetable_price = vegetable.price
-        else:
-            vegetable_price = float(request.POST.get('price'))
-
-
-
-        if request.POST.get('stock') == '':
-            vegetable_stock = vegetable.stock
-        else:
-            vegetable_stock = request.POST.get('stock')
-        
-        date_edit = vegetable.date_add
-
-
-        vegetable.name = vegetable_name
-        vegetable.description = vegetable_description
-        vegetable.picture = vegetable_image
-        vegetable.price = vegetable_price
-        vegetable.stock = vegetable_stock
-        vegetable.date_edit = date_edit
-        vegetable.save()
-        messages.success(request, 'Légume modifié avec succès!')
         return redirect('accounts:editsite')
-    total_commands = Command.objects.filter(statut= 'En cours').count()
-    return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable, 'total_commands': total_commands})
 
+    return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable, 'total_commands': total_commands})
 
 
 
