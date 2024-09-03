@@ -50,7 +50,6 @@
                         <small class="me-3"><i class="fab fa-whatsapp me-2 text-secondary"></i><a href="https://wa.me/243810589288" class="text-white">whastapp</a></small>
                     </div>
                     <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Politique de confidentialité</small>/</a>
                     </div>
                 </div>
             </div>
@@ -90,11 +89,7 @@
                                 <i class="fas fa-edit fa-2x"></i>
                             </a>
                             {% endif %}
-                            <!-- {% if user.is_authenticated and user.is_staff %}
-                                <a href="{% url 'accounts:add_user_staff' %}" class="my-auto">
-                                    <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -90px; height: 20px; min-width: 20px;">{{total_commands}}</span>
-                                </a>
-                            {% endif %} -->
+                        
 
                             {% if user.is_authenticated and not user.is_staff %}
                                 <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto">
