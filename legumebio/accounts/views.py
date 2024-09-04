@@ -3,11 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.views.decorators.csrf import csrf_exempt
-from requests import session
 from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
+from django.core.mail import send_mail
+from django.conf import settings
 
 def register(request):
     form = RegistrationForm()
@@ -16,12 +16,35 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            send_welcome_email(user)    
             messages.success(request, 'Compte créé avec succès!')
             return redirect('vegetable_shop:commands')
         else:
             messages.warning(request, 'Erreur lors de la validation du formulaire.')
             return render(request, 'accounts/register.html', {'form': form})
     return render(request, 'accounts/register.html', {'form': form})
+
+
+def send_welcome_email(user):
+    subject = 'Bienvenue sur Madeleine Légumes Bio'
+    message = f"""
+    Bonjour {user.username},
+
+    Nous vous souhaitons la bienvenue sur Madeleine Légumes Bio !
+
+    Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nos membres et nous espérons que vous apprécierez notre service de commande de légumes bio en ligne.
+
+    Si vous avez des questions ou des besoins particuliers, n'hésitez pas à nous contacter. Nous sommes là pour vous aider.
+
+    Cordialement,
+
+    L'équipe Madeleine Légumes Bio
+    """
+
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [user.email]
+    
+    send_mail(subject, message, from_email, recipient_list)
 
 
 
@@ -42,6 +65,7 @@ def seeallcommands(request):
     total_commands = Command.objects.filter(statut= 'En cours').count()
     
     return render(request, 'accounts/seeallcommands.html', {'commands': all_commands, 'total_commands': total_commands})
+
 
 @permission_required('vegetable_shop.change_command')
 def update_status(request, command_id):
