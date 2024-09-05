@@ -1,3 +1,5 @@
+from django.utils import timezone
+from asgiref.sync import sync_to_async
 from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import render, redirect
@@ -48,7 +50,7 @@ def commands(request):
                 name_client=form.cleaned_data['name_client'],
                 address_client=form.cleaned_data['address_client'],
                 commune_client=form.cleaned_data['commune_client'],
-                date_command=datetime.now(),
+                date_command=timezone.now(),
                 statut='En cours',
                 amount=vegetable.price * quantity
             )
@@ -66,9 +68,7 @@ def commands(request):
 
             vegetable.stock -= quantity
             vegetable.save()
-
-            email_command(request.user)
-            
+            email_command(request.user)  
             messages.success(request, 'Commande passée avec succès!')
             return redirect('vegetable_shop:commands')
         else:
@@ -77,8 +77,7 @@ def commands(request):
     else:
         form = CommandForm()
         user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        return render(request, 'vegetable_shop/commands.html', {'form': form, 'vegetables': Vegetable.objects.all(), 'user_commands_count': user_commands_count})
-    
+        return render(request, 'vegetable_shop/commands.html', {'form': form, 'vegetables': Vegetable.objects.all(), 'user_commands_count': user_commands_count})    
 
 def contact(request):
     form = SuggestionForm() 

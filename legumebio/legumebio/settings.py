@@ -123,6 +123,9 @@ EMAIL_HOST_PASSWORD = 'oynlthpubfjw qrfu'
 DEFAULT_FROM_EMAIL = 'madeleinelegumebio@gmail.com'
 
 
+
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 

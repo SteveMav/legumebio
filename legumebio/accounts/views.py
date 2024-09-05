@@ -44,7 +44,6 @@ def register(request):
 
 
 
-
 @login_required
 def seecommands(request):
     total_commands = Command.objects.filter(user=request.user, statut='En cours').count()
@@ -159,7 +158,6 @@ def edit_vegetable(request, vegetable_id):
     return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable, 'total_commands': total_commands})
 
 
-
 @login_required
 def edit_account(request):
     user = request.user
@@ -167,23 +165,9 @@ def edit_account(request):
     if request.method == 'POST':
         form = EditAccountForm(request.POST, instance=user)
         if form.is_valid():
-            updated = False
-            if form.cleaned_data['username'] and form.cleaned_data['username'] != user.username:
-                user.username = form.cleaned_data['username']
-                updated = True
-            if form.cleaned_data['email'] and form.cleaned_data['email'] != user.email:
-                user.email = form.cleaned_data['email']
-                updated = True
-            if form.cleaned_data['phone_number'] and form.cleaned_data['phone_number'] != user.profile.phone_number:
-                user.profile.phone_number = form.cleaned_data['phone_number']
-                updated = True
-            if form.cleaned_data['commune'] and form.cleaned_data['commune'] != user.profile.commune:
-                user.profile.commune = form.cleaned_data['commune']
-                updated = True
-
-            if updated:
-                user.save()
-                user.profile.save()
+            # Vérifiez si des changements ont été effectués
+            if form.has_changed():
+                form.save()  # Enregistrez les modifications via le formulaire
                 messages.success(request, 'Votre compte a été mis à jour avec succès.')
             else:
                 messages.info(request, 'Aucune modification détectée.')

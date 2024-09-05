@@ -126,10 +126,10 @@ class EditAccountForm(forms.ModelForm):
         required=False, 
         widget=forms.Select(attrs={'class': 'form-control my-3', 'placeholder': 'Commune'})
     )
-        
+
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'email', 'phone_number', 'commune']  # Ajoutez les champs manquants
         labels = {
             'username': 'Nom d\'utilisateur',
             'email': 'Email',
@@ -139,6 +139,8 @@ class EditAccountForm(forms.ModelForm):
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Nom d\'utilisateur'}),
             'email': forms.EmailInput(attrs={'class': 'form-control my-3', 'placeholder': 'Email'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control my-3', 'placeholder': 'Numéro de téléphone'}),
+            'commune': forms.Select(attrs={'class': 'form-control my-3', 'placeholder': 'Commune'}),
         }
         help_texts = {
             'username': None,
@@ -149,14 +151,13 @@ class EditAccountForm(forms.ModelForm):
         super(EditAccountForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['phone_number'].initial = self.instance.profile.phone_number
-            self.fields['phone_number'].label = 'Numéro de téléphone'
             self.fields['commune'].initial = self.instance.profile.commune
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.profile.phone_number = self.cleaned_data['phone_number']
-        user.profile.commune = self.cleaned_data['commune']
         if commit:
             user.save()
+            user.profile.phone_number = self.cleaned_data['phone_number']
+            user.profile.commune = self.cleaned_data['commune']
             user.profile.save()
         return user

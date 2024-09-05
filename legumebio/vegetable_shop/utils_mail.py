@@ -4,7 +4,6 @@ from .models import Command
 from django.utils.dateformat import DateFormat
 
 
-
 def email_command(user):
     last_command = Command.objects.filter(user=user).last()
     formatted_date = DateFormat(last_command.date_command).format('d-m-Y H:i')
