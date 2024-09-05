@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from .models import Command, Vegetable
+from .utils_mail import email_command
 
 def index(request):
     if request.user.is_staff:
@@ -29,35 +30,6 @@ def index(request):
         return render(request, 'vegetable_shop/index.html', {'vegetables': vegetables, 'random_vegetables': random_vegetables})
     
 
-def email_command(user):
-    subject = 'Commande passée'
-    message = f"""
-Bonjour {user.username},
-
-Merci d'avoir passé commande chez Madeleine Légumes Bio !
-
-Nous sommes ravis de vous informer que votre commande a été reçue et est en cours de préparation. Voici les détails de votre commande :
-
-- Numéro de commande : {Command.objects.filter(user=user).last().id}
-- Date de commande : {Command.objects.filter(user=user).last().date_command}
--légume : {Command.objects.filter(user=user).last().vegetable}
-- Quantité : {Command.objects.filter(user=user).last().quantity}
-- Total : {Command.objects.filter(user=user).last().amount} fc
-
-Nous mettons tout en œuvre pour vous livrer des légumes frais et bio dans les meilleurs délais. Vous recevrez un email de confirmation dès que votre commande sera expédiée.
-
-En attendant, n'hésitez pas à explorer notre site pour découvrir nos recettes et conseils pour profiter au mieux de vos légumes.
-
-Merci de votre confiance et à très bientôt !
-
-Cordialement,
-
-L'équipe Madeleine Légumes Bio
-"""
-    from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [user.email]
-    
-    send_mail(subject, message, from_email, recipient_list)
 
 
 

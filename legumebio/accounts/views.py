@@ -6,45 +6,36 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
-from django.core.mail import send_mail
-from django.conf import settings
+from accounts.utils_mail import send_welcome_email
+
 
 def register(request):
     form = RegistrationForm()
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            send_welcome_email(user)    
-            messages.success(request, 'Compte créé avec succès!')
-            return redirect('vegetable_shop:commands')
+            try:
+                user = form.save()
+                login(request, user)
+                send_welcome_email(user)    
+                messages.success(request, 'Compte créé avec succès!')
+                return redirect('vegetable_shop:commands')
+            except Exception as e:
+                messages.error(request, f'Erreur lors de la création du compte: {str(e)}')
         else:
-            messages.warning(request, 'Erreur lors de la validation du formulaire.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    if 'username' in error:
+                        messages.warning(request, 'Nom d\'utilisateur déjà pris, veuillez en choisir un autre.')
+                    elif 'email' in error:
+                        messages.warning(request, 'Adresse e-mail déjà utilisée, veuillez en choisir une autre.')
+                    elif 'password' in error:
+                        messages.warning(request, 'Erreur de mot de passe: ' + error)
+                    else:
+                        messages.warning(request, f'Erreur dans le champ {field}: {error}')
             return render(request, 'accounts/register.html', {'form': form})
     return render(request, 'accounts/register.html', {'form': form})
 
-
-def send_welcome_email(user):
-    subject = 'Bienvenue sur Madeleine Légumes Bio'
-    message = f"""
-    Bonjour {user.username},
-
-    Nous vous souhaitons la bienvenue sur Madeleine Légumes Bio !
-
-    Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nos membres et nous espérons que vous apprécierez notre service de commande de légumes bio en ligne.
-
-    Si vous avez des questions ou des besoins particuliers, n'hésitez pas à nous contacter. Nous sommes là pour vous aider.
-
-    Cordialement,
-
-    L'équipe Madeleine Légumes Bio
-    """
-
-    from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [user.email]
-    
-    send_mail(subject, message, from_email, recipient_list)
 
 
 
