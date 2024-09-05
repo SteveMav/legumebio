@@ -47,7 +47,7 @@ def commands(request):
                 quantity=quantity,
                 name_client=form.cleaned_data['name_client'],
                 address_client=form.cleaned_data['address_client'],
-                commune_client=form.cleaned_data['commune_client'],  # Ajout de cette ligne
+                commune_client=form.cleaned_data['commune_client'],
                 date_command=datetime.now(),
                 statut='En cours',
                 amount=vegetable.price * quantity
@@ -55,6 +55,12 @@ def commands(request):
 
             if vegetable.stock < quantity:
                 messages.warning(request, 'Quantité insuffisante en stock.')
+                return redirect('vegetable_shop:commands')
+            if vegetable.name != 'pondu' and quantity < 5:
+                messages.warning(request, 'Vous devez prendre une quantité minimum de 5 pour un légume autre que le pondu.')
+                return redirect('vegetable_shop:commands')
+            if vegetable.name == 'pondu' and quantity < 3:
+                messages.warning(request, 'Vous devez prendre une quantité minimum de 3 pour un légume pondu.')
                 return redirect('vegetable_shop:commands')
             command.save()
 

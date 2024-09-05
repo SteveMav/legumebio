@@ -7,32 +7,38 @@ from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
 from accounts.utils_mail import send_welcome_email, email_add_stock_command
+from validate_email_address import validate_email
+
 
 
 def register(request):
     form = RegistrationForm()
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            try:
-                user = form.save()
-                login(request, user)
-                send_welcome_email(user)    
-                messages.success(request, 'Compte créé avec succès!')
-                return redirect('vegetable_shop:commands')
-            except Exception as e:
-                messages.error(request, f'Erreur lors de la création du compte: {str(e)}')
+        if validate_email(request.POST.get('email')):
+            form = RegistrationForm(request.POST)
+            if form.is_valid():
+                try:
+                    user = form.save()
+                    send_welcome_email(user) 
+                    login(request, user)
+                    messages.success(request, 'Compte créé avec succès!')
+                    return redirect('vegetable_shop:commands')
+                except Exception as e:
+                    messages.warning(request, f'Erreur lors de la création du compte: {str(e)}')
+            else:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        if 'username' in error:
+                            messages.warning(request, 'Nom d\'utilisateur déjà pris, veuillez en choisir un autre.')
+                        elif 'email' in error:
+                            messages.warning(request, 'Adresse e-mail déjà utilisée, veuillez en choisir une autre.')
+                        elif 'password' in error:
+                            messages.warning(request, 'Erreur de mot de passe: ' + error)
+                        else:
+                            messages.warning(request, f'Erreur dans le champ {field}: {error}')
+                return render(request, 'accounts/register.html', {'form': form})
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    if 'username' in error:
-                        messages.warning(request, 'Nom d\'utilisateur déjà pris, veuillez en choisir un autre.')
-                    elif 'email' in error:
-                        messages.warning(request, 'Adresse e-mail déjà utilisée, veuillez en choisir une autre.')
-                    elif 'password' in error:
-                        messages.warning(request, 'Erreur de mot de passe: ' + error)
-                    else:
-                        messages.warning(request, f'Erreur dans le champ {field}: {error}')
+            messages.warning(request, 'L\'adresse email n\'est pas valide.')
             return render(request, 'accounts/register.html', {'form': form})
     return render(request, 'accounts/register.html', {'form': form})
 

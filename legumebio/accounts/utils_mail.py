@@ -1,10 +1,7 @@
-from validate_email_address import validate_email
 from django.core.mail import send_mail
-from django.contrib import messages
 from django.conf import settings
 
 def send_welcome_email(user):
-    if validate_email(user.email):
         subject = 'Bienvenue sur Madeleine Légumes Bio'
         message = f"""
         Bonjour {user.username},
@@ -24,8 +21,6 @@ def send_welcome_email(user):
         recipient_list = [user.email]
         
         send_mail(subject, message, from_email, recipient_list)
-    else:
-        messages.warning("L'adresse email n'est pas valide.")
 
 
 def email_add_stock_command(user, vegetable, new_stock):
