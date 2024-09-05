@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
-from accounts.utils_mail import send_welcome_email
+from accounts.utils_mail import send_welcome_email, email_add_stock_command
 
 
 def register(request):
@@ -137,6 +137,9 @@ def edit_vegetable(request, vegetable_id):
 
         if request.POST.get('stock') and int(request.POST.get('stock')) != vegetable.stock:
             vegetable.stock = int(request.POST.get('stock'))
+            users = User.objects.all()
+            for user in users:
+                email_add_stock_command(user, vegetable, vegetable.stock)
             updated = True
 
         if updated:
