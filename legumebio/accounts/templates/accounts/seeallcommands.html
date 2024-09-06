@@ -64,43 +64,45 @@
                             {% else %}
                             <a href="{% url 'vegetable_shop:commands' %}" class="nav-item nav-link animate__animated animate__fadeInDown" style="animation-delay: 0.1s;">commandes</a>
                             {% endif %}
+
                                                     
                             <a href="{% url 'vegetable_shop:contact' %}" class="nav-item nav-link animate__animated animate__fadeInDown" style="animation-delay: 0.2s;">Contact</a>
                            
                         </div>
                         <div class="d-flex m-3 me-0">
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:add_user_staff' %}" class="my-auto animate__animated animate__fadeInRight" style="animation-delay: 0.3s;">
+                            <a href="{% url 'accounts:add_user_staff' %}" class="my-auto animate__animated animate__fadeInRight">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                             {% else %}
-                            <a href="{% url 'accounts:seecommands' %}" class="my-auto animate__animated animate__fadeInRight" style="animation-delay: 0.3s;">
+                            <a href="{% url 'accounts:seecommands' %}" class="my-auto animate__animated animate__fadeInRight">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                             {% endif %}
 
                             
                             {% if user.is_staff %}
-                            <a href="{% url 'accounts:editsite' %}" class="my-auto animate__animated animate__fadeInRight" style="margin-left: 30px; margin-right: 20px; animation-delay: 0.4s;">
+                            <a href="{% url 'accounts:editsite' %}" class="my-auto animate__animated animate__fadeInRight" style="margin-left: 30px; margin-right: 20px; animation-delay: 0.1s;">
                                 <i class="fas fa-edit fa-2x"></i>
                             </a>
                             {% endif %}
 
                             {% if user.is_authenticated and not user.is_staff %}
-                                <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto animate__animated animate__fadeInRight" style="animation-delay: 0.5s;">
+                                <a href="{% url 'accounts:seecommands' %}" class="position-relative me-4 my-auto animate__animated animate__fadeInRight" style="animation-delay: 0.2s;">
+                                    
                                     <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: -40px; height: 20px; min-width: 20px;">{{user_commands_count}}</span>
                                 </a>
                             {% endif %}
 
                             {% if user.is_authenticated %}
                                 {% with icon='fas fa-sign-out-alt' %}
-                                    <a href="{% url 'accounts:logout' %}" class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4 animate__animated animate__fadeInRight" style="animation-delay: 0.6s;">
+                                    <a href="{% url 'accounts:logout' %}" class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4 animate__animated animate__fadeInRight" style="animation-delay: 0.3s;">
                                         <i class="{{ icon }}"></i>
                                     </a>
                                 {% endwith %}
                             {% else %}
                                 {% with icon='fas fa-sign-in-alt' %}
-                                    <a href="{% url 'accounts:login' %}" class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4 animate__animated animate__fadeInRight" style="animation-delay: 0.6s;">
+                                    <a href="{% url 'accounts:login' %}" class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4 animate__animated animate__fadeInRight" style="animation-delay: 0.3s;">
                                         <i class="{{ icon }}"></i>
                                     </a>
                                 {% endwith %}
@@ -111,3 +113,169 @@
             </div>
         </div>
         <!-- Navbar End -->
+
+
+
+
+        <div class="container py-5 mt-5" id="seecommands" style="position:relative; top: 55px;">
+            {% block content %}
+            <h1 class="text-primary text-center animate__animated animate__fadeInDown">Les commandes que vous avez passez</h1>
+            <div class="table-responsive animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Légume</th>
+                        <th scope="col">Nom client</th>
+                        <th scope="col">adresse</th>
+                        <th scope="col">numéro tel</th>
+                        <th scope="col">commune</th>
+                        <th scope="col">Quantité</th>
+                        <th scope="col">Prix total</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Statut</th>
+                      </tr>
+                    </thead>
+                    {% for command in commands %}
+                    <tbody>
+                        <tr class="animate__animated animate__fadeInUp" >
+
+                            <th scope="row">
+                                <p class="mb-0 mt-4">{{command.vegetable}}</p>
+                            </th>
+                            <td>
+                                <p class="mb-0 mt-4">{{ command.name_client }}</p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">{{command.address_client}}</p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">{{command.user.profile.phone_number}}</p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">{{command.commune_client}}</p>
+                            </td>
+                            <td>
+                               <p class="mb-0 mt-4">{{command.quantity}}</p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4"> {{command.amount}}fc </p>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4"> {{ command.date_command|date:"d/m/Y/H:i" }} </p>
+                            </td>
+                            {% if command.statut == 'effectué' %}
+                            {% with color_statut='btn-link' %}
+                                <td>
+                                    <a href="{% url 'accounts:update_status' command.id %}" class="btn {{ color_statut }} statut animate__animated animate__pulse animate__infinite" data-id="{{ command.id }}"> {{ command.statut }} </a>
+                                </td>
+                            {% endwith %}
+                        {% else %}
+                            {% with color_statut='btn-outline-danger' %}
+                                <td>
+                                    <a href="{% url 'accounts:update_status' command.id %}" class="btn {{ color_statut }} statut animate__animated animate__pulse animate__infinite" data-id="{{ command.id }}"> {{ command.statut }} </a>
+                                </td>
+                            {% endwith %}
+                        {% endif %}
+                        
+
+                           
+
+        
+                        </tr>
+                    </tbody>
+                    {% empty %}
+                    <h3 class="text-center animate__animated animate__fadeIn" style="animation-delay: 0.5s;">Aucune commande n'a encore été passée</h3>
+                    {% endfor %}
+
+                </table>
+            </div>
+            {% endblock %}
+        </div>
+
+                  
+<style>
+    @media (max-width: 480px) {
+        #seecommands{
+            position: relative;
+            bottom: 100px;
+        }
+        
+    }
+</style>
+
+
+
+                 <!-- Footer Start -->
+            <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+            <div class="container py-5">
+                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <a href="#">
+                                <h1 class="text-primary mb-0">Madeleine legumes bio</h1>
+                                <p class="text-secondary mb-0">produits de qualité</p>
+                            </a>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                <div class="row g-5">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-item">
+                            <h4 class="text-light mb-3">Pourquoi nos légumes sont appreciés ?</h4>
+                            <p class="mb-4">Nos légumes bio sont cultivés avec soin, sans pesticides ni produits chimiques. Ils sont récoltés à maturité pour garantir une fraîcheur optimale et un goût authentique.</p>
+                            <a href="/commande" class="btn border-secondary py-2 px-4 rounded-pill text-primary">En savoir plus</a>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="footer-item">
+                            <h4 class="text-light mb-3">Contact</h4>
+                            <p>Address: IPG GOMBE, KINSHASA</p>
+                            <p>Email: madeleinelegumesbio@gmail.com</p>
+                            <p>Téléphone: +243 810589288</p>
+                            <a href="https://wa.me/243810589288"><i class="fab fa-whatsapp text-light me-2"></i>whastapp</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright bg-dark py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Madeleine legumes bio</a>, Tous droits réservés.</span>
+                    </div>
+                    <div class="col-md-6 my-auto text-center text-md-end text-white">
+                        <!--/*** This template is free as long as you keep the below author's credit link/attribution link/backlink. ***/-->
+                        <!--/*** If you'd like to use the template without the below author's credit link/attribution link/backlink, ***/-->
+                        <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                        site réalisé par <a class="border-bottom" href="https://stevemav.github.io/portfolio/">SteveMav</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Copyright End -->
+
+
+        <!-- Modal Search End -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+        <script src="{% static 'javascript/main.js' %}"></script>
+
+        <script>
+            AOS.init();
+        </script>
+    
+    
+
+</body>
+</html>

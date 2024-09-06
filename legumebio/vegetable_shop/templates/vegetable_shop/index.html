@@ -118,8 +118,10 @@
             <div class="container py-5">
                 <div class="row g-5 align-items-center">
                     <div class="col-md-12 col-lg-7" data-aos="fade-right">
-                        <h4 class="mb-3 text-secondary animate__animated animate__fadeInUp">legumes 100% bio</h4>
-                        <h1 class="mb-5 display-3 text-primary" id="animated-text"></h1>
+                        <h4 class="mb-5 text-secondary animate__animated animate__fadeInUp">legumes 100% bio</h4>
+                        <div style="height: 150px; min-height: 150px;"> <!-- Added min-height to prevent collapsing -->
+                            <h1 class="mb-5 display-3 text-primary" id="animated-text"></h1>
+                        </div>
                         <script>
                             const text = "Du pondu à l'epinard en passant par le Ngai Ngai";
                             const animatedText = document.getElementById('animated-text');
@@ -149,13 +151,13 @@
                         <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                             <div class="carousel-inner" role="listbox">
                                 {% for vegetable in vegetables %}
-                                    <div class="carousel-item {% if forloop.first %}active{% endif %} rounded">
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %} rounded position-relative">
                                         {% if vegetable.picture %}
-                                            <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 bg-secondary rounded animate__animated animate__zoomIn" alt="{{ vegetable.name }}">
+                                            <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 bg-secondary rounded animate__animated animate__zoomIn" alt="{{ vegetable.name }}" style="object-fit: cover; min-height: 300px;">
                                         {% else %}
-                                            <img src="{% static 'path/to/default/image.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded animate__animated animate__zoomIn" alt="Image non disponible">
+                                            <img src="{% static 'path/to/default/image.jpg' %}" class="img-fluid w-100 h-100 bg-secondary rounded animate__animated animate__zoomIn" alt="Image non disponible" style="object-fit: cover; min-height: 300px;">
                                         {% endif %}
-                                        <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">{{ vegetable.name }}</a>
+                                        <a href="{% url 'vegetable_shop:commands' %}" class="btn px-4 py-2 text-white rounded animate__animated animate__fadeInUp position-absolute top-50 start-50 translate-middle" style="animation-delay: 0.5s;">{{ vegetable.name }}</a>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -169,7 +171,6 @@
                             </button>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -185,7 +186,7 @@
                         <a href="{% url 'vegetable_shop:commands' %}">
                             <div class="text-center rounded bg-light p-4 animate__animated animate__fadeIn">
                                 <div class="featurs-icon rounded-circle bg-secondary mb-5 mx-auto">
-                                    <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 rounded" alt="{{ vegetable.name }}">
+                                    <img src="{{ vegetable.picture.url }}" class="img-fluid w-100 h-100 rounded" alt="{{ vegetable.name }}" style="object-fit: cover;">
                                 </div>
                                 <div class="featurs-content text-center">
                                     <h5>{{ vegetable.name }}: {{ vegetable.price }} Fc</h5>
