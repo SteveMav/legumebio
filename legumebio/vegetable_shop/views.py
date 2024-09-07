@@ -13,36 +13,32 @@ from .models import Command, Vegetable
 from .utils_mail import email_command
 
 def index(request):
+    # Common variables for all user types
+    vegetables = Vegetable.objects.all()
+    random_vegetables = Vegetable.objects.order_by('?')[:4]  # Get 4 random vegetables
+    context = {'vegetables': vegetables, 'random_vegetables': random_vegetables}
+
     if request.user.is_staff:
+        # For staff users, show total number of ongoing commands
         commands = Command.objects.filter(statut='En cours')
-        total_commands = commands.count()
-        vegetables = Vegetable.objects.all()
-        random_vegetables = Vegetable.objects.order_by('?')[:4]
-        return render(request, 'vegetable_shop/index.html', {'total_commands': total_commands, 'vegetables': vegetables, 'random_vegetables': random_vegetables})
+        context['total_commands'] = commands.count()
+    elif request.user.is_authenticated:
+        # For authenticated non-staff users, show their ongoing commands count
+        context['user_commands_count'] = Command.objects.filter(user=request.user, statut='En cours').count()
     
-    if request.user.is_authenticated:
-        user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        vegetables = Vegetable.objects.all()
-        random_vegetables = Vegetable.objects.order_by('?')[:4]
-        return render(request, 'vegetable_shop/index.html', {'user_commands_count': user_commands_count, 'vegetables': vegetables, 'random_vegetables': random_vegetables})
-    
-    else:
-        vegetables = Vegetable.objects.all()
-        random_vegetables = Vegetable.objects.order_by('?')[:4]
-        return render(request, 'vegetable_shop/index.html', {'vegetables': vegetables, 'random_vegetables': random_vegetables})
-    
-
-
-
+    # Render the index page with the appropriate context
+    return render(request, 'vegetable_shop/index.html', context)
 
 @login_required
 def commands(request):
     if request.method == 'POST':
         form = CommandForm(request.POST)
         if form.is_valid():
+            # Extract form data
             vegetable = form.cleaned_data['vegetable']
             quantity = form.cleaned_data['quantity']
             
+            # Create a new command instance
             command = Command(
                 user=request.user,
                 vegetable=vegetable,
@@ -55,6 +51,7 @@ def commands(request):
                 amount=vegetable.price * quantity
             )
 
+            # Validate stock and minimum quantity requirements
             if vegetable.stock < quantity:
                 messages.warning(request, 'Quantité insuffisante en stock.')
                 return redirect('vegetable_shop:commands')
@@ -64,10 +61,13 @@ def commands(request):
             if vegetable.name == 'pondu' and quantity < 3:
                 messages.warning(request, 'Vous devez prendre une quantité minimum de 3 pour un légume pondu.')
                 return redirect('vegetable_shop:commands')
+            
+            # Save the command and update stock
             command.save()
-
             vegetable.stock -= quantity
             vegetable.save()
+            
+            # Send confirmation email and show success message
             email_command(request.user)  
             messages.success(request, 'Commande passée avec succès!')
             return redirect('vegetable_shop:commands')
@@ -75,41 +75,45 @@ def commands(request):
             messages.warning(request, 'Erreur lors de la validation du formulaire.')
             return render(request, 'vegetable_shop/commands.html', {'form': form})
     else:
+        # Display the command form for GET requests
         form = CommandForm()
         user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        return render(request, 'vegetable_shop/commands.html', {'form': form, 'vegetables': Vegetable.objects.all(), 'user_commands_count': user_commands_count})    
+        return render(request, 'vegetable_shop/commands.html', {
+            'form': form, 
+            'vegetables': Vegetable.objects.all(), 
+            'user_commands_count': user_commands_count
+        })
 
 def contact(request):
-    form = SuggestionForm() 
+    form = SuggestionForm()
+    context = {'form': form}
+
     if request.user.is_staff:
+        # For staff users, show total number of ongoing commands
         commands = Command.objects.filter(statut='En cours')
-        total_commands = commands.count()
-        return render(request, 'vegetable_shop/contact.html', {'form': form, 'total_commands': total_commands})
+        context['total_commands'] = commands.count()
+    elif request.user.is_authenticated:
+        # For authenticated non-staff users, show their ongoing commands count
+        context['user_commands_count'] = Command.objects.filter(user=request.user, statut='En cours').count()
+
     if request.method == 'POST':
         form = SuggestionForm(request.POST)
         if form.is_valid():
-            suggestion = form.cleaned_data['suggestions']
-            name_user = form.cleaned_data['name_user']
-            email_user = form.cleaned_data['email_user']
-            
+            # Save the suggestion
             suggestions = Suggestions(
-                name_user=name_user,
-                email_user=email_user,
-                suggestions=suggestion
+                name_user=form.cleaned_data['name_user'],
+                email_user=form.cleaned_data['email_user'],
+                suggestions=form.cleaned_data['suggestions']
             )
             suggestions.save()
             messages.success(request, 'Votre message a bien été envoyé!')
             return redirect('vegetable_shop:contact')
         else:
             messages.warning(request, 'Erreur lors de la validation du formulaire.')
-    if request.user.is_authenticated:
-        user_commands_count = Command.objects.filter(user=request.user, statut='En cours').count()
-        return render(request, 'vegetable_shop/contact.html', {'form': form, 'user_commands_count': user_commands_count})
-    else:
-        return render(request, 'vegetable_shop/contact.html', {'form': form})
 
+    return render(request, 'vegetable_shop/contact.html', context)
 
-
+# Custom error handlers
 def custom_404(request, exception):
     return render(request, 'vegetable_shop/404.html', status=404)
 

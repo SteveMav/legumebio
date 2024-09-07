@@ -1,15 +1,20 @@
+# Import necessary modules
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
 from vegetable_shop.models import Vegetable
 
+# Custom registration form that extends UserCreationForm
 class RegistrationForm(UserCreationForm):
+    # Define choices for commune field
     COMMUNE_CHOICES = [
         ('gombe','gombe'),
         ('lingwala', 'ligwala'),
         ('kinshasa', 'kinshasa')
     ]
+    
+    # Add custom fields for phone number and commune
     phone_number = forms.CharField(
         max_length=15, 
         required=False, 
@@ -25,6 +30,7 @@ class RegistrationForm(UserCreationForm):
         help_text=''
     )
 
+    # Meta class to specify model and form fields
     class Meta:
         model = User
         fields = ['username', 'email', 'phone_number', 'commune', 'password1', 'password2']
@@ -47,6 +53,7 @@ class RegistrationForm(UserCreationForm):
             'commune': '',
         }
 
+    # Custom initialization of the form
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control my-3', 'id': 'passwordInput'})
@@ -56,8 +63,7 @@ class RegistrationForm(UserCreationForm):
         self.fields['password2'].help_text = ''
         self.fields['password2'].widget.attrs.update({'class': 'form-control my-3', 'id': 'confirmPasswordInput'})
 
-        
-
+    # Custom save method to handle profile creation
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
@@ -66,6 +72,7 @@ class RegistrationForm(UserCreationForm):
             profile.save()
         return user
     
+# Custom login form
 class loginForm(forms.Form):
     username = forms.CharField(
         max_length=15, 
@@ -82,14 +89,14 @@ class loginForm(forms.Form):
         help_text=''
     )
     
+    # Custom initialization of the login form
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['password'].widget.attrs.update({'class': 'form-control my-3', 'id': 'passwordInput'})
         self.fields['password'].help_text = ''
         self.fields['password'].label = 'Mot de passe'
 
-
-
+# Form for vegetable management
 class VegetableForm(forms.Form):
     class Meta:
         model = Vegetable
@@ -107,9 +114,7 @@ class VegetableForm(forms.Form):
             'stock': forms.NumberInput(attrs={'class': 'form-control my-3', 'id': 'stockInput'}),
         }
 
-
-
-
+# Form for editing user account
 class EditAccountForm(forms.ModelForm):
     COMMUNE_CHOICES = [
         ('gombe', 'gombe'),
@@ -129,7 +134,7 @@ class EditAccountForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone_number', 'commune']  # Ajoutez les champs manquants
+        fields = ['username', 'email', 'phone_number', 'commune']
         labels = {
             'username': 'Nom d\'utilisateur',
             'email': 'Email',
@@ -147,12 +152,14 @@ class EditAccountForm(forms.ModelForm):
             'email': None,
         }
 
+    # Custom initialization of the edit account form
     def __init__(self, *args, **kwargs):
         super(EditAccountForm, self).__init__(*args, **kwargs)
         if self.instance and self.instance.pk:
             self.fields['phone_number'].initial = self.instance.profile.phone_number
             self.fields['commune'].initial = self.instance.profile.commune
 
+    # Custom save method to handle profile updates
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:

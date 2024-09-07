@@ -1,13 +1,17 @@
+# Import necessary modules
 from django import forms
 from .models import Command, Vegetable, Suggestions
 
+# Form for creating or updating a Command
 class CommandForm(forms.ModelForm):
+    # Define choices for commune field
     COMMUNE_CHOICES = [
         ('gombe', 'Gombe'),
         ('lingwala', 'Lingwala'),
         ('kinshasa', 'kinshasa'),
     ]
 
+    # Custom field for commune selection
     commune_client = forms.ChoiceField(
         choices=COMMUNE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control my-3', 'id': 'communeSelect'}),
@@ -37,6 +41,7 @@ class CommandForm(forms.ModelForm):
             'amount': forms.HiddenInput(),
         }
 
+# Form for creating or updating a Suggestion
 class SuggestionForm(forms.ModelForm):
     class Meta:
         model = Suggestions
