@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vegetable_shop',
     'accounts',
+     'django_celery_beat',
+
 ]
 
 MIDDLEWARE = [
@@ -71,6 +73,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'legumebio.wsgi.application'
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379'  # Adresse du broker (Redis)
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'  # Stockage des résultats
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Paris'  # Configurez votre fuseau horaire
 
 
 # Database

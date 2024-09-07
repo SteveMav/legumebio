@@ -10,6 +10,7 @@ from datetime import datetime
 from accounts.utils_mail import send_welcome_email, email_add_stock_command
 from validate_email_address import validate_email
 import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
 
@@ -23,7 +24,6 @@ def register(request):
                 try:
                     # Create user, send welcome email, and log in
                     user = form.save()
-                    
                     # Use ThreadPoolExecutor to run send_welcome_email with a timeout
                     with concurrent.futures.ThreadPoolExecutor() as executor:
                         future = executor.submit(send_welcome_email, user)
@@ -127,7 +127,7 @@ def add_vegetable(request):
 
 
 # View to edit a vegetable
-@permission_required('vegetable_shop.change_vegetable')
+
 def edit_vegetable(request, vegetable_id):
     vegetable = get_object_or_404(Vegetable, id=vegetable_id)
     total_commands = Command.objects.filter(statut='En cours').count()
@@ -160,8 +160,8 @@ def edit_vegetable(request, vegetable_id):
             vegetable.stock = int(request.POST.get('stock'))
             users = User.objects.all()
             if current_stock < vegetable.stock:
-              for user in users:
-                email_add_stock_command(user, vegetable, vegetable.stock)
+                for user in users:
+                    email_add_stock_command.delay(user.email, user.username, vegetable.name, vegetable.stock)
             updated = True
 
         if updated:
@@ -173,7 +173,6 @@ def edit_vegetable(request, vegetable_id):
         return redirect('accounts:editsite')
 
     return render(request, 'accounts/edit_vegetable.html', {'vegetable': vegetable, 'total_commands': total_commands})
-
 
 # View for users to edit their account
 @login_required
