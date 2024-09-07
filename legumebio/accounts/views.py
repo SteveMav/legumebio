@@ -9,6 +9,8 @@ from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
 from accounts.utils_mail import send_welcome_email, email_add_stock_command
 from validate_email_address import validate_email
+import concurrent.futures
+import time
 
 
 # User registration view
@@ -21,7 +23,16 @@ def register(request):
                 try:
                     # Create user, send welcome email, and log in
                     user = form.save()
-                    send_welcome_email(user) 
+                    
+                    # Use ThreadPoolExecutor to run send_welcome_email with a timeout
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(send_welcome_email, user)
+                        try:
+                            future.result(timeout=5)  # Wait for 5 seconds
+                        except concurrent.futures.TimeoutError:
+                            # If it takes more than 5 seconds, we just continue
+                            pass
+                    
                     login(request, user)
                     messages.success(request, 'Compte créé avec succès!')
                     return redirect('vegetable_shop:commands')
@@ -94,6 +105,8 @@ def delete_vegetable(request, vegetable_id):
     vegetable.delete()
     return redirect('accounts:editsite')
 
+
+
 # View to add a new vegetable
 @permission_required('vegetable_shop.add_vegetable')
 def add_vegetable(request):
@@ -111,11 +124,6 @@ def add_vegetable(request):
     total_commands = Command.objects.filter(statut= 'En cours').count()
     return render(request, 'accounts/add_vegetable.html', {'total_commands': total_commands})
 
-
-# View to edit a vegetable (placeholder)
-@permission_required('vegetable_shop.add_vegetable')
-def edit_vegetable(request, vegetable_id):
-    vegetable = Vegetable.objects.get(id=vegetable_id)
 
 
 # View to edit a vegetable
