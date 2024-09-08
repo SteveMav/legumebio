@@ -12,6 +12,8 @@ from validate_email_address import validate_email
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
+from django.utils.translation import gettext as _
+
 
 
 # User registration view
@@ -34,28 +36,30 @@ def register(request):
                             pass
                     
                     login(request, user)
-                    messages.success(request, 'Compte créé avec succès!')
+                    messages.success(request, _('Account created successfully!'))
                     return redirect('vegetable_shop:commands')
                 except Exception as e:
-                    messages.warning(request, f'Erreur lors de la création du compte: {str(e)}')
+                    messages.warning(request, _('Error creating account:'))
             else:
                 # Handle form validation errors
                 for field, errors in form.errors.items():
                     for error in errors:
                         if 'username' in error:
-                            messages.warning(request, 'Nom d\'utilisateur déjà pris, veuillez en choisir un autre.')
+                            messages.warning(request, _('Username already taken, please choose another.'))
+                            return render(request, 'accounts/register.html', {'form': form})
                         elif 'email' in error:
-                            messages.warning(request, 'Adresse e-mail déjà utilisée, veuillez en choisir une autre.')
+                            messages.warning(request, _('Email address already in use, please choose another.'))
+                            return render(request, 'accounts/register.html', {'form': form})
                         elif 'password' in error:
-                            messages.warning(request, 'Erreur de mot de passe: ' + error)
+                            messages.warning(request, _('Password error: ') + _(error))
+                            return render(request, 'accounts/register.html', {'form': form})
                         else:
-                            messages.warning(request, f'Erreur dans le champ {field}: {error}')
+                            messages.warning(request, _('erreur au champ mot de passe: {error}').format(field=field, error=_(error)))
                 return render(request, 'accounts/register.html', {'form': form})
         else:
-            messages.warning(request, 'L\'adresse email n\'est pas valide.')
+            messages.warning(request, _('The email address is not valid.'))
             return render(request, 'accounts/register.html', {'form': form})
     return render(request, 'accounts/register.html', {'form': form})
-
 
 # View for users to see their commands
 @login_required
@@ -161,7 +165,7 @@ def edit_vegetable(request, vegetable_id):
             users = User.objects.all()
             if current_stock < vegetable.stock:
                 for user in users:
-                    email_add_stock_command.delay(user.email, user.username, vegetable.name, vegetable.stock)
+                    email_add_stock_command(user.email, user.username, vegetable.name, vegetable.stock)
             updated = True
 
         if updated:

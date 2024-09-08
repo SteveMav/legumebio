@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 from .models import Command, Vegetable
-from .utils_mail import email_command
+from .utils_mail import email_command, suggestion_mail
 
 def index(request):
     # Common variables for all user types
@@ -67,7 +67,7 @@ def commands(request):
             vegetable.stock -= quantity
             vegetable.save()
             
-            # Send confirmation email and show success message
+        
             email_command(request.user)  
             messages.success(request, 'Commande passée avec succès!')
             return redirect('vegetable_shop:commands')
@@ -107,6 +107,7 @@ def contact(request):
             )
             suggestions.save()
             messages.success(request, 'Votre message a bien été envoyé!')
+            suggestion_mail(suggestions)
             return redirect('vegetable_shop:contact')
         else:
             messages.warning(request, 'Erreur lors de la validation du formulaire.')

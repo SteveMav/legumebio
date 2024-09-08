@@ -36,3 +36,26 @@ L'équipe Madeleine Légumes Bio
     recipient_list = [user.email]
     
     send_mail(subject, message, from_email, recipient_list)
+
+    
+
+def suggestion_mail(suggestions):
+    subject = 'Nouvelle Suggestion'
+    message = f"""
+Bonjour,
+
+Vous avez reçu une nouvelle suggestion pour votre site web. Veuillez consulter les détails ci-dessous :
+
+Nom : {suggestions.name_user}
+Email : {suggestions.email_user}
+Suggestion : {suggestions.suggestions}
+
+"""
+    email_steve = 'stevemavuela@gmail.com'
+    
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [email_steve]
+    
+    send_mail(subject, message, from_email, recipient_list)
+
+

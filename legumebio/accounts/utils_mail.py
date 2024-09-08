@@ -1,13 +1,12 @@
 from django.core.mail import send_mail
 from django.conf import settings
-from celery import shared_task
 
 def send_welcome_email(user):
-    subject = 'Bienvenue sur Madeleine Légumes Bio'
+    subject = 'Bienvenue sur Madeleine Légume Bio'
     message = f"""
     Bonjour {user.username},
 
-    Nous vous souhaitons la bienvenue sur Madeleine Légumes Bio !
+    Nous vous souhaitons la bienvenue sur Madeleine Légume Bio !
 
     Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nos membres et nous espérons que vous apprécierez notre service de commande de légumes bio en ligne.
 
@@ -15,7 +14,7 @@ def send_welcome_email(user):
 
     Cordialement,
 
-    L'équipe Madeleine Légumes Bio
+    L'équipe Madeleine Légume Bio
     """
 
     from_email = settings.DEFAULT_FROM_EMAIL
@@ -23,8 +22,6 @@ def send_welcome_email(user):
     
     send_mail(subject, message, from_email, recipient_list)
 
-
-@shared_task
 def email_add_stock_command(user_email, username, vegetable_name, new_stock):
     subject = f'Ajout de stock pour {vegetable_name}'
     message = f"""
@@ -41,7 +38,7 @@ Si vous avez des questions ou des besoins particuliers, n'hésitez pas à nous c
 
 Cordialement,
 
-L'équipe Madeleine Légumes Bio
+L'équipe Madeleine Légume Bio
 """
     from_email = settings.DEFAULT_FROM_EMAIL
     recipient_list = [user_email]
