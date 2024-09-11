@@ -2,7 +2,7 @@ from django.utils import timezone
 from asgiref.sync import sync_to_async
 from django.core.mail import send_mail
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Vegetable, Command, Suggestions
 from .forms import CommandForm, SuggestionForm
 from datetime import datetime
@@ -30,7 +30,11 @@ def index(request):
     return render(request, 'vegetable_shop/index.html', context)
 
 @login_required
-def commands(request):
+def commands(request, vegetable_id=None):
+    if vegetable_id:
+        selected_vegetable = get_object_or_404(Vegetable, vegetable_id=id)
+        form = CommandForm(initial={'vegetable': selected_vegetable})
+
     if request.method == 'POST':
         form = CommandForm(request.POST)
         if form.is_valid():
