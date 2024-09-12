@@ -143,7 +143,7 @@
                                 {% endfor %}
                                 </section>
                         {% endif %}
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group mt-3">
                                 <label for="name">Nom du légume:</label>
