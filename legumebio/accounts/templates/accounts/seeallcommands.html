@@ -28,6 +28,9 @@
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
         <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
 
+        <!-- SweetAlert2 CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+
     </head>
 
     <body>
@@ -173,7 +176,7 @@
                         {% else %}
                             {% with color_statut='btn-outline-danger' %}
                                 <td>
-                                    <a href="{% url 'accounts:update_status' command.id %}" class="btn {{ color_statut }} statut animate__animated animate__pulse animate__infinite" data-id="{{ command.id }}"> {{ command.statut }} </a>
+                                    <button onclick="confirmStatusUpdate({{ command.id }}, '{{ command.statut }}')" class="btn {{ color_statut }} statut animate__animated animate__pulse animate__infinite" data-id="{{ command.id }}"> {{ command.statut }} </button>
                                 </td>
                             {% endwith %}
                         {% endif %}
@@ -269,11 +272,34 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
+        <!-- SweetAlert2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+
         <script src="{% static 'javascript/main.js' %}"></script>
 
         <script>
             AOS.init();
         </script>
+
+        <script>
+            function confirmStatusUpdate(commandId, currentStatus) {
+                Swal.fire({
+                    title: 'Êtes-vous sûr ?',
+                    text: `Vous êtes sur le point de mettre à jour le statut de la commande à ${currentStatus}. Cette action est irréversible !`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#81c408',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Oui, mettre à jour !',
+                    cancelButtonText: 'Annuler'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'accounts:update_status' 0 %}".replace('0', commandId);
+                    }
+                })
+            }
+        </script>
+
     
     
 

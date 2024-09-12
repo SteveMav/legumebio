@@ -19,7 +19,7 @@ Nous sommes ravis de vous informer que votre commande a été reçue et est en c
 - Numéro de commande : {last_command.id}
 - Date de commande : {formatted_date}
 - Légume : {last_command.vegetable}
-- Quantité : {last_command.quantity}
+- Quantité(Mipiku) : {last_command.quantity}
 - Total : {last_command.amount} fc
 
 Nous mettons tout en œuvre pour vous livrer des légumes frais et bio dans les meilleurs délais. Vous recevrez un email de confirmation dès que votre commande sera expédiée.
@@ -57,5 +57,6 @@ Suggestion : {suggestions.suggestions}
     recipient_list = [email_steve]
     
     send_mail(subject, message, from_email, recipient_list)
+
 
 

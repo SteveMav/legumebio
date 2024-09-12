@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .forms import RegistrationForm, loginForm, VegetableForm, EditAccountForm
 from vegetable_shop.models import Command, Vegetable
 from datetime import datetime
-from accounts.utils_mail import send_welcome_email, email_add_stock_command
+from accounts.utils_mail import send_welcome_email, email_add_stock_command, confirm_command
 from validate_email_address import validate_email
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -81,11 +81,19 @@ def seeallcommands(request):
 # View to update command status
 @permission_required('vegetable_shop.change_command')
 def update_status(request, command_id):
+    user = request.user
     if request.method == 'GET':
         try:
             command = Command.objects.get(id=command_id)
             command.statut = 'effectué'
             command.save()
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(confirm_command, user.email, user.username, command.vegetable, command.quantity, command.amount)
+                try:
+                    future.result(timeout=5)  # Wait for 5 seconds
+                except concurrent.futures.TimeoutError:
+                    # If it takes more than 5 seconds, we just continue
+                    pass
             return redirect('accounts:seeallcommands')
         except Command.DoesNotExist:
             return render(request,{'success': False, 'error': 'Commande non trouvée'})

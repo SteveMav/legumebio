@@ -22,6 +22,9 @@ def send_welcome_email(user):
     
     send_mail(subject, message, from_email, recipient_list)
 
+
+    
+
 def email_add_stock_command(user_email, username, vegetable_name, new_stock):
     subject = f'Ajout de stock pour {vegetable_name}'
     message = f"""
@@ -42,5 +45,32 @@ L'équipe Madeleine Légume Bio
 """
     from_email = settings.DEFAULT_FROM_EMAIL
     recipient_list = [user_email]
+    
+    send_mail(subject, message, from_email, recipient_list)
+
+
+
+
+
+def confirm_command(user_email, username, vegetable_name, quantity, amount):
+    subject = f'Confirmation de la commande pour {vegetable_name}'
+    message = f"""
+Bonjour {username},
+
+Nous avons le plaisir de vous informer que votre commande pour {vegetable_name} a été éffectuée.
+
+- Quantité(Mipiku) : {quantity}
+- Prix total : {amount} fc
+
+Nous espérons que cette confirmation vous permettra de profiter pleinement de nos légumes frais et bio.
+
+Si vous avez des questions ou des besoins particuliers, n'hésitez pas à nous contacter. Nous sommes là pour vous aider.
+
+Cordialement,
+
+L'équipe Madeleine Légume Bio
+"""
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [user_email]    
     
     send_mail(subject, message, from_email, recipient_list)
